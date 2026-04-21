@@ -2,12 +2,13 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)   # allow cross-origin requests
+CORS(app)
 
 events = [
     {"id": 1, "title": "Yoga in the Park"},
     {"id": 2, "title": "Lake 5K Run"}
 ]
+
 
 @app.route("/", methods=["GET"])
 def welcome():
@@ -23,11 +24,20 @@ def get_events():
 def add_event():
     data = request.get_json()
 
-    new_id = max((e["id"] for e in events), default=0) + 1
+    # Validation for test cases
+    if not data:
+        return jsonify({"error": "Request body is required"}), 400
+
+    title = data.get("title")
+
+    if not title or not title.strip():
+        return jsonify({"error": "Title is required"}), 400
+
+    new_id = max((event["id"] for event in events), default=0) + 1
 
     new_event = {
         "id": new_id,
-        "title": data["title"]
+        "title": title.strip()
     }
 
     events.append(new_event)
@@ -37,3 +47,6 @@ def add_event():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+    

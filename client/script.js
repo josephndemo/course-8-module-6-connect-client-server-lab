@@ -4,11 +4,13 @@ fetch("http://127.0.0.1:5000/events")
     events.forEach(renderEvent);
   });
 
-document.querySelector("form").addEventListener("submit", (e) => {
+document.querySelector("#event-form").addEventListener("submit", (e) => {
   e.preventDefault();
 
   const titleInput = document.querySelector("#title");
-  const title = titleInput.value;
+  const title = titleInput.value.trim();
+
+  if (!title) return;
 
   fetch("http://127.0.0.1:5000/events", {
     method: "POST",
